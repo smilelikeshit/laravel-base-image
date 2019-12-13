@@ -1,7 +1,7 @@
 FROM php:7.2-apache-stretch
 
 WORKDIR /var/www/html
-#COPY . /var/www/html
+
 
 ENV TZ=Asia/Jakarta
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -40,12 +40,8 @@ RUN apt-get install -y libxml2-dev libzip-dev libpq-dev libmcrypt-dev libmagickw
         && apt-get purge -y \
         && rm -r /var/lib/apt/lists/* \ 
         && a2enmod rewrite 
-        
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('sha384', 'composer-setup.php') === '106d3d32cc30011325228b9272424c1941ad75207cb5244bee161e5f9906b0edf07ab2a733e8a1c945173eb9b1966197') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-    && php composer-setup.php \
-    && php -r "unlink('composer-setup.php');" 
-    #&& php composer.phar install --no-dev --no-scripts 
-    #&& php composer.phar update
+
+ADD composer.phar /var/www/html/
+RUN  php composer.phar -V 
 
 EXPOSE 80
