@@ -17,8 +17,16 @@ php package
 
 default using node version 8.5.0
 
+# already installed composer 
+
+default using composer version 1.9.1
+
 # already install apache 
 
 customization config using this documentation
 
 https://hub.docker.com/_/httpd/
+
+# dockerhub image for this repo follow this link
+
+https://hub.docker.com/r/insignficant/laravel-base-image
