@@ -45,7 +45,7 @@ RUN apt-get install -y libxml2-dev \
         && pecl install mcrypt-1.0.2 \
         && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-configure zip --with-libzip \ 
-        && docker-php-ext-install pdo_mysql pdo_pgsql pgsql gd xml zip mbstring \
+        && docker-php-ext-install pdo_mysql pdo_pgsql pgsql gd xml zip mbstring exif \
         && docker-php-ext-enable mcrypt \ 
         && apt-get purge -y \
         && rm -r /var/lib/apt/lists/* 

@@ -13,6 +13,7 @@ php package
 - zip
 - mcrypt
 - mbstring
+- exif
 
 # already installed nvm 
 
