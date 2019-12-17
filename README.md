@@ -12,6 +12,7 @@ php package
 - xml
 - zip
 - mcrypt
+- mbstring
 
 # already installed nvm 
 
