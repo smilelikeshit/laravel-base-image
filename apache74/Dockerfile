@@ -1,37 +1,12 @@
-FROM php:7.2-apache-stretch
+FROM php:7.4-apache-stretch
 
 WORKDIR /var/www/html
 
 ENV TZ=Asia/Jakarta
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-RUN apt-get update && apt-get install curl -y
-
-# nvm environment variables
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 8.5.0
-
-
-RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
-
-# install node and npm
-RUN source $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION \
-    && nvm alias default $NODE_VERSION \
-    && nvm use default
-
-# add node and npm to path so the commands are available
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-
-# confirm installation
-RUN node -v && npm -v
-
 # Install package for php
-RUN apt-get install -y libxml2-dev \
+RUN apt-get update && apt-get install -y libxml2-dev \
         libzip-dev libpq-dev \
         libmcrypt-dev \
         libmagickwand-dev \
@@ -42,6 +17,7 @@ RUN apt-get install -y libxml2-dev \
         git \
         zip \
         cron \
+        vim \
         --no-install-recommends \
         && pecl install mcrypt-1.0.2 \
         && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -50,10 +26,15 @@ RUN apt-get install -y libxml2-dev \
         && docker-php-ext-enable mcrypt \ 
         && apt-get purge -y \
         && rm -r /var/lib/apt/lists/* 
+
 # Enable rewrite module apache #
-RUN a2enmod rewrite
+RUN a2enmod rewrite && mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+RUN  sed -i -e 's/expose_php = On/expose_php = Off/' /usr/local/etc/php/php.ini
+RUN echo "ServerTokens Prod" >> /etc/apache2/apache2.conf
+RUN echo "ServerSignature Off" >> /etc/apache2/apache2.conf
 
 
+# add composer.phar 
 ADD composer.phar /var/www/html/
 RUN  php composer.phar -V 
 
